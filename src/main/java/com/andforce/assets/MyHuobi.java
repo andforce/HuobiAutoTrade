@@ -56,6 +56,20 @@ public class MyHuobi {
         mAccount = account;
     }
 
+    public double getTotalUSDT(){
+        if (mAssets == null || mAssets.isEmpty()){
+            return 0;
+        }
+//        for (Asset asset: mAssets) {
+
+//            asset.get
+//        }
+        return 0;
+    }
+
+
+
+
     public void refresh(){
 
         mAssets = null;
