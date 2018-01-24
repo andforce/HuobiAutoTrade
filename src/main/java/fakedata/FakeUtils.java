@@ -20,7 +20,7 @@ public class FakeUtils {
 
     public void write(String content){
         try {
-            FileWriter writer = new FileWriter("fakedata.txt");
+            FileWriter writer = new FileWriter("fakedata.txt", true);
             writer.write(content + "\n");
             writer.flush();
             writer.close();
@@ -44,7 +44,7 @@ public class FakeUtils {
 
     public void buy(String symbol, float buyAmount, float usdt){
 
-        if (symbol.equals("xrpusdt")){
+        if (symbol.toLowerCase().equals("xrpusdt")){
             if (buyAmount < 1.f){
                 write(TimeUtils.getTimeStr() + " 购买XRP失败， 数量：" + buyAmount);
                 return;

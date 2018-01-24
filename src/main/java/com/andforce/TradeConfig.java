@@ -5,6 +5,6 @@ package com.andforce;
  */
 public class TradeConfig {
 
-    public static final float SELL = 1f;
-    public static final float BUY = -1f;
+    public static final float SELL = 0.1f;
+    public static final float BUY = -0.01f;
 }

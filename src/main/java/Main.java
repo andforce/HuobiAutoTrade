@@ -52,13 +52,17 @@ public class Main {
                         float account = FakeUtils.USDT / nowPrice;
                         fakeUtils.buy(symbol, account, nowPrice);
                     } else {
-                        if (symbol.equals("xrpusdt")){
+                        if (symbol.equals("XRPUSDT")){
                             if (FakeUtils.XRP >= 1.f){
                                 fakeUtils.sell(symbol, (float) FakeUtils.XRP, nowPrice);
+                            } else {
+                                System.out.println("xrp 数量不足，无法卖出");
                             }
                         } else {
                             if (FakeUtils.BTC >= 0.001f){
                                 fakeUtils.sell(symbol, (float) FakeUtils.BTC, nowPrice);
+                            } else {
+                                System.out.println("BTC 数量不足，无法卖出");
                             }
                         }
 
