@@ -65,7 +65,7 @@ public class FakeUtils {
         USDT -= totalUSDT;
 
         String buy;
-        if (symbol.equals("xrpusdt")){
+        if (symbol.toLowerCase().equals("xrpusdt")){
             XRP += buyAmount;
             buy = TimeUtils.getTimeStr() + " \tbuy:" + symbol + " account:" + realBuyAmount + " price:"  + realPrice + " fee:[" + fee + "XRP] 实际所得XRP:" + (buyAmount - fee) + " 账户USDT总量:" + USDT + " xrp:" + XRP + " btc:" + BTC;
         } else {
