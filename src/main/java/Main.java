@@ -1,19 +1,13 @@
-import com.andforce.assets.Asset;
 import com.andforce.assets.MyHuobi;
-import com.andforce.assets.OrderInfo;
 import com.andforce.bean.HuobiResult;
-import com.andforce.bean.account.Account;
-import com.andforce.bean.balance.Balance;
-import com.andforce.bean.balance.List;
 import com.andforce.bean.historybuy.HistoryBuy;
-import com.andforce.bean.order.Data;
 import com.andforce.bean.order.Order;
 import com.andforce.network.HuobiRequest;
 import com.andforce.network.okhttp.HuobiOkHttp;
 import com.andforce.network.websocket.HuobiWebSocket;
+import com.andforce.network.websocket.OnExpectListener;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 
 
 public class Main {
@@ -31,11 +25,16 @@ public class Main {
         myHuobi.refresh();
 
 
-        print("------------------");
+        if (true){
 
+            HuobiWebSocket huobiWebSocket = HuobiWebSocket.getInstance();
 
-        if (false){
-            HuobiWebSocket.executeWebSocket();
+            huobiWebSocket.startMonitorPrice(new OnExpectListener() {
+                @Override
+                public void onExpect(String symbol, String nowPrice, float rate) {
+
+                }
+            },new String[]{"xrpusdt", "btcusdt"});
             return;
         }
 

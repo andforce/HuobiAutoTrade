@@ -17,28 +17,42 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 public class HuobiWebSocket extends WebSocketClient {
 
+    private OnExpectListener mOnExpectListener;
+
     private static final String url = "wss://api.huobi.pro/ws";
 
-    private static HuobiWebSocket chatclient = null;
-
-    public static final Map<String, String> MAP_CUR_RESULT = new Hashtable<String, String>();
+    private static HuobiWebSocket mInstance = null;
 
     private Gson mGson = new Gson();
 
-    public HuobiWebSocket(URI serverUri, Draft draft) {
+
+
+    public static HuobiWebSocket getInstance(){
+        if (mInstance == null) {
+            try {
+                mInstance = new HuobiWebSocket(new URI(url), getWebSocketHeaders(), 1000);
+            } catch (URISyntaxException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return mInstance;
+    }
+
+
+    private HuobiWebSocket(URI serverUri, Draft draft) {
         super(serverUri, draft);
     }
 
-    public HuobiWebSocket(URI serverURI) {
+    private HuobiWebSocket(URI serverURI) {
         super(serverURI);
     }
 
@@ -59,7 +73,7 @@ public class HuobiWebSocket extends WebSocketClient {
             if (market.contains("ping")) {
                 //System.out.println(market.replace("ping", "pong"));
                 // Client 心跳
-                chatclient.send(market.replace("ping", "pong"));
+                this.send(market.replace("ping", "pong"));
             } else {
                 if (market.contains("\"status\":\"ok\"")){
                     //System.out.println(" market:" + market);
@@ -74,7 +88,13 @@ public class HuobiWebSocket extends WebSocketClient {
                     float close = tick.getClose();
                     float open = tick.getOpen();
                     String coin = kLine.getCh().split("\\.")[1].toUpperCase();
-                    System.out.println(coin + " \tOpen:\t" + String.format("%08.2f", open) + "\t\tClose:\t" + String.format("%08.2f", close) + "\t\tRate:\t" + String.format("%.2f%%", rate));
+
+                    String closeStr = String.format("%08.2f", close);
+                    System.out.println(coin + " \tOpen:\t" + String.format("%08.2f", open) + "\t\tClose:\t" + closeStr + "\t\tRate:\t" + String.format("%.2f%%", rate));
+
+                    if (mOnExpectListener != null){
+                        mOnExpectListener.onExpect(coin, closeStr, rate);
+                    }
                 }
             }
 //			System.out.println(MAP_CUR_RESULT);
@@ -129,51 +149,46 @@ public class HuobiWebSocket extends WebSocketClient {
         }
     }
 
-    public static void executeWebSocket() {
+    public void startMonitorPrice(OnExpectListener listener, String[] monitors) {
+
+        mOnExpectListener = listener;
+
+        trustAllHosts(this);
         try {
-            // WebSocketImpl.DEBUG = true;
-            chatclient = new HuobiWebSocket(new URI(url), getWebSocketHeaders(), 1000);
-            trustAllHosts(chatclient);
-            chatclient.connectBlocking();
-            // 订阅K线数据 sub 根据自己需要订阅数据
-//            com.andforce.network.websocket.HuobiWebSocket.SubModel subModel = new com.andforce.network.websocket.HuobiWebSocket.SubModel();
-//            subModel.setSub("market.ethusdt.kline.1min");
-//            subModel.setId(10000L);
-//            chatclient.send(JSONObject.toJSONString(subModel));
-//
-            com.andforce.network.websocket.HuobiWebSocket.SubModel subModel1 = new com.andforce.network.websocket.HuobiWebSocket.SubModel();
-            subModel1.setSub("market.xrpusdt.kline.1day");
-            subModel1.setId(10001L);
-            chatclient.send(JSONObject.toJSONString(subModel1));
-
-            SubModel subModel2 = new SubModel();
-            subModel2.setSub("market.btcusdt.kline.1day");
-            subModel2.setId(10002L);
-            chatclient.send(JSONObject.toJSONString(subModel2));
-        } catch (Exception e) {
-
-
+            this.connectBlocking();
+            long monitorId = 0x0001;
+            for (String monitor : monitors) {
+                com.andforce.network.websocket.HuobiWebSocket.SubModel subModel1 = new com.andforce.network.websocket.HuobiWebSocket.SubModel();
+                String kline = String.format("market.%s.kline.1day", monitor.toLowerCase());
+                subModel1.setSub(kline);
+                subModel1.setId(monitorId++);
+                this.send(JSONObject.toJSONString(subModel1));
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        // 订阅K线数据 sub 根据自己需要订阅数据
+
 
 
         // 订阅数据深度
 //		com.andforce.network.websocket.HuobiWebSocket.SubModel subModel1 = new com.andforce.network.websocket.HuobiWebSocket.SubModel();
 //		subModel1.setSub("market.btccny.depth.percent10");
 //		subModel1.setId(10001L);
-//		chatclient.send(JSONObject.toJSONString(subModel1));
+//		this.send(JSONObject.toJSONString(subModel1));
         // 取消订阅省略
 
         // 请求数据 sub 根据自己需要请求数据
 //		ReqModel reqModel = new ReqModel();
 //		reqModel.setReq("market.btccny.depth.percent10");
 //		reqModel.setId(10002L);
-//		chatclient.send(JSONObject.toJSONString(reqModel));
+//		this.send(JSONObject.toJSONString(reqModel));
 
         // 请求数据
 //		ReqModel reqModel1 = new ReqModel();
 //		reqModel1.setReq("market.btccny.detail");
 //		reqModel1.setId(10003L);
-//		chatclient.send(JSONObject.toJSONString(reqModel1));
+//		this.send(JSONObject.toJSONString(reqModel1));
 //		System.out.println("send : " + JSONObject.toJSONString(reqModel));
     }
 
