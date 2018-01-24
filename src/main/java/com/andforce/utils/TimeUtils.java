@@ -7,8 +7,6 @@ import java.util.Calendar;
  */
 public class TimeUtils {
 
-    private static final String sFormat = "%04d-%02d-%02dT%02d:%02d:%02d";
-
     public static String getUTCTimeStr(String format) {
         StringBuilder UTCTimeBuffer = new StringBuilder();
         // 1、取得本地时间：
@@ -27,6 +25,22 @@ public class TimeUtils {
         int second = cal.get(Calendar.SECOND);
 
         return  String.format(format, year, month, day, hour, minute, second);
+    }
+
+    private static final String sFormat = "%04d-%02d-%02dT%02d:%02d:%02d";
+
+    public static String getTimeStr() {
+        StringBuilder UTCTimeBuffer = new StringBuilder();
+        // 1、取得本地时间：
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        int second = cal.get(Calendar.SECOND);
+
+        return  String.format(sFormat, year, month, day, hour, minute, second);
     }
 
 }

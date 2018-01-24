@@ -1,15 +1,11 @@
 import com.andforce.assets.MyHuobi;
-import com.andforce.bean.HuobiResult;
 import com.andforce.bean.historybuy.HistoryBuy;
-import com.andforce.bean.order.Order;
 import com.andforce.network.HuobiRequest;
 import com.andforce.network.okhttp.BuyOrSellApi;
 import com.andforce.network.okhttp.HuobiOkHttp;
 import com.andforce.network.websocket.HuobiWebSocket;
 import com.andforce.network.websocket.OnExpectListener;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import fakedata.FakeUtils;
 
 import java.net.URISyntaxException;
 
@@ -24,6 +20,7 @@ public class Main {
 
 
 
+        //new FakeUtils().write("");
 
         HuobiOkHttp okHttp = new HuobiOkHttp();
 
@@ -35,9 +32,10 @@ public class Main {
         double usdt = myHuobi.getTotalUSDT();
 
         System.out.println("USDT: " + usdt);
-
         if (false){
 
+
+            //============
             HuobiWebSocket huobiWebSocket = HuobiWebSocket.getInstance();
 
             huobiWebSocket.startMonitorPrice(new OnExpectListener() {
@@ -55,12 +53,8 @@ public class Main {
                     System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 }
             },new String[]{/*"xrpusdt", */"btcusdt"});
-            return;
-        }
 
 
-
-        if (false) {
 
             // 已经成交的委托
             HuobiRequest matchresultsRequest = new HuobiRequest.Builder()
