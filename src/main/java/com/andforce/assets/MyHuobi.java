@@ -78,7 +78,7 @@ public class MyHuobi {
         for (com.andforce.bean.balance.List b : balance.getData().getList()) {
             double _balance = Double.valueOf(b.getBalance());
             if (_balance != 0){
-                Asset asset = new Asset(b.getCurrency(), b.getType(), b.getBalance());
+                Asset asset = new Asset(b.getCurrency(), b.getType(), Double.valueOf(b.getBalance()));
                 assets.add(asset);
             }
         }

@@ -5,5 +5,5 @@ package com.andforce.network.websocket;
  */
 public interface OnExpectListener {
 
-    public void onExpect(String buyOrSell ,String symbol, String nowPrice, float rate);
+    public void onExpect(String buyOrSell ,String symbol, float nowPrice, float rate);
 }

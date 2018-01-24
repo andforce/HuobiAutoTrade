@@ -3,6 +3,7 @@ import com.andforce.bean.HuobiResult;
 import com.andforce.bean.historybuy.HistoryBuy;
 import com.andforce.bean.order.Order;
 import com.andforce.network.HuobiRequest;
+import com.andforce.network.okhttp.BuyOrSellApi;
 import com.andforce.network.okhttp.HuobiOkHttp;
 import com.andforce.network.websocket.HuobiWebSocket;
 import com.andforce.network.websocket.OnExpectListener;
@@ -33,13 +34,18 @@ public class Main {
             huobiWebSocket.startMonitorPrice(new OnExpectListener() {
 
                 @Override
-                public void onExpect(String buyOrSell, String symbol, String nowPrice, float rate) {
+                public void onExpect(String buyOrSell, String symbol, float nowPrice, float rate) {
                     huobiWebSocket.pause(symbol);
+
+                    BuyOrSellApi api = new BuyOrSellApi();
+
+                    api.buy(String.valueOf(myHuobi.getAccount().getAccountId()),symbol, "1.00", nowPrice / 2.f);
+
                     System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                     System.out.println(buyOrSell + "\t币种:" + symbol + "\t现价:" + nowPrice +"\t跌涨:" + rate);
                     System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 }
-            },new String[]{"xrpusdt", "btcusdt"});
+            },new String[]{/*"xrpusdt", */"btcusdt"});
             return;
         }
 

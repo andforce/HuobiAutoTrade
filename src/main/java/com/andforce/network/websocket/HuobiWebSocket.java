@@ -103,11 +103,11 @@ public class HuobiWebSocket extends WebSocketClient {
 
                     if (rate >= TradeConfig.SELL){
                         if (mOnExpectListener != null){
-                            mOnExpectListener.onExpect("sell", coin, closeStr, rate);
+                            mOnExpectListener.onExpect("sell", coin, close, rate);
                         }
                     } else if (rate <= TradeConfig.BUY){
                         if (mOnExpectListener != null){
-                            mOnExpectListener.onExpect("buy",coin, closeStr, rate);
+                            mOnExpectListener.onExpect("buy",coin, close, rate);
                         }
                     } else {
                         System.out.println(coin + " \tOpen:\t" + String.format("%08.2f", open) + "\t\tClose:\t" + closeStr + "\t\tRate:\t" + String.format("%.2f%%", rate));
