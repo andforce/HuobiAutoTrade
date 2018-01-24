@@ -4,6 +4,9 @@ import com.andforce.bean.HuobiResult;
 import com.andforce.network.HuobiRequest;
 import com.google.gson.Gson;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+
 /**
  * Created by andforce on 2018/1/24.
  */
@@ -20,12 +23,18 @@ public class BuyOrSellApi {
      * @param price         单价
      * @return
      */
-    public HuobiResult buy(String accountId, String symbol, String buyAmount, float price){
+    public HuobiResult buy(String accountId, String symbol, float buyAmount, float price){
+
+        float realPrice = formatFloat(price);
+        float realBuyAmount = formatFloat(buyAmount);
+
+        System.out.println("buy:" + symbol + " account:" + realBuyAmount + " price:"  + realPrice);
+
         HuobiRequest orderPlaceRequest = new HuobiRequest.Builder().method("POST").host("api.huobi.pro").path("/v1/order/orders/place")
                 .postJsonBody("account-id", accountId)
                 .postJsonBody("symbol", symbol.toLowerCase())
-                .postJsonBody("amount", buyAmount)
-                .postJsonBody("price", String.valueOf(price))
+                .postJsonBody("amount", String.valueOf(realBuyAmount))
+                .postJsonBody("price", String.valueOf(realPrice))
                 .postJsonBody("type", "buy-limit")
                 .postJsonBody("source", "api")
                 .build();
@@ -43,12 +52,23 @@ public class BuyOrSellApi {
         return null;
     }
 
-    public HuobiResult sell(String accountId, String symbol, String buyAmount, float price){
+    private float formatFloat(float price) {
+        BigDecimal b = new BigDecimal(price);
+        return b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+    }
+
+    public HuobiResult sell(String accountId, String symbol, float buyAmount, float price){
+
+        float realPrice = formatFloat(price);
+        float realBuyAmount = formatFloat(buyAmount);
+
+        System.out.println("sell:" + symbol + " account:" + realBuyAmount + " price:"  + realPrice);
+
         HuobiRequest orderPlaceRequest = new HuobiRequest.Builder().method("POST").host("api.huobi.pro").path("/v1/order/orders/place")
                 .postJsonBody("account-id", accountId)
                 .postJsonBody("symbol", symbol.toLowerCase())
-                .postJsonBody("amount", buyAmount)
-                .postJsonBody("price", String.valueOf(price))
+                .postJsonBody("amount", String.valueOf(realBuyAmount))
+                .postJsonBody("price", String.valueOf(realPrice))
                 .postJsonBody("type", "sell-limit")
                 .postJsonBody("source", "api")
                 .build();

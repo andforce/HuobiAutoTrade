@@ -39,7 +39,7 @@ public class Main {
 
                     BuyOrSellApi api = new BuyOrSellApi();
 
-                    api.buy(String.valueOf(myHuobi.getAccount().getAccountId()),symbol, "1.00", nowPrice / 2.f);
+                    api.buy(String.valueOf(myHuobi.getAccount().getAccountId()),symbol, 1f, 1.3333f);
 
                     System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                     System.out.println(buyOrSell + "\t币种:" + symbol + "\t现价:" + nowPrice +"\t跌涨:" + rate);
