@@ -7,6 +7,9 @@ import com.andforce.network.okhttp.BuyOrSellApi;
 import com.andforce.network.okhttp.HuobiOkHttp;
 import com.andforce.network.websocket.HuobiWebSocket;
 import com.andforce.network.websocket.OnExpectListener;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 import java.net.URISyntaxException;
 
@@ -19,6 +22,9 @@ public class Main {
     public static void main(String[] args) throws URISyntaxException {
 
 
+
+
+
         HuobiOkHttp okHttp = new HuobiOkHttp();
 
 
@@ -26,8 +32,11 @@ public class Main {
 
         myHuobi.refresh();
 
+        double usdt = myHuobi.getTotalUSDT();
 
-        if (true){
+        System.out.println("USDT: " + usdt);
+
+        if (false){
 
             HuobiWebSocket huobiWebSocket = HuobiWebSocket.getInstance();
 
@@ -61,32 +70,6 @@ public class Main {
 
             print(historyBuy.getData().size());
 
-            // 根据状态差委托
-            HuobiRequest orderRequest = new HuobiRequest.Builder().method("GET").host("api.huobi.pro").path("/v1/order/orders")
-                    .parameter("symbol", "btcusdt")
-                    .parameter("states", "submitted,partial-filled")
-                    .build();
-
-            Order order = okHttp.GET(Order.class, orderRequest);
-
-
-            //884520305
-
-            String accountId = String.valueOf(myHuobi.getAccount().getAccountId());
-            print("accountId:" + accountId);
-
-            HuobiRequest orderPlaceRequest = new HuobiRequest.Builder().method("POST").host("api.huobi.pro").path("/v1/order/orders/place")
-                    .postJsonBody("account-id", accountId)
-                    .postJsonBody("symbol", "btcusdt")
-                    .postJsonBody("amount", "0.000001")
-                    .postJsonBody("price", "18888.00")
-                    .postJsonBody("type", "sell-limit")
-                    .postJsonBody("source", "api")
-                    .build();
-
-            HuobiResult huobiResult = okHttp.POST(HuobiResult.class, orderPlaceRequest);
-
-            print(huobiResult.getStatus());
         }
 
     }

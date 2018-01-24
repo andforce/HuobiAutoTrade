@@ -60,11 +60,15 @@ public class MyHuobi {
         if (mAssets == null || mAssets.isEmpty()){
             return 0;
         }
-//        for (Asset asset: mAssets) {
 
-//            asset.get
-//        }
-        return 0;
+        double result = 0;
+        for (Asset asset: mAssets) {
+            if (asset.getCurrency().equals("usdt") && asset.getBalance() != 0){
+                result += asset.getBalance();
+            }
+
+        }
+        return result;
     }
 
 

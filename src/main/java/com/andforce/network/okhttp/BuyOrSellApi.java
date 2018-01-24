@@ -2,6 +2,7 @@ package com.andforce.network.okhttp;
 
 import com.andforce.bean.HuobiResult;
 import com.andforce.network.HuobiRequest;
+import com.andforce.utils.NumberUtils;
 import com.google.gson.Gson;
 
 import java.math.BigDecimal;
@@ -53,8 +54,7 @@ public class BuyOrSellApi {
     }
 
     private float formatFloat(float price) {
-        BigDecimal b = new BigDecimal(price);
-        return b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+        return NumberUtils.shortFloat(price, 2);
     }
 
     public HuobiResult sell(String accountId, String symbol, float buyAmount, float price){

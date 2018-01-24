@@ -1,5 +1,7 @@
 package com.andforce.assets;
 
+import com.andforce.utils.NumberUtils;
+
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ public class Asset {
     public Asset(String currency, String type, double balance) {
         this.currency = currency;
         this.type = type;
-        this.balance = balance;
+        this.balance = NumberUtils.shortDouble(balance, 8);
     }
 
     public String getCurrency() {
