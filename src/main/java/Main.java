@@ -34,7 +34,7 @@ public class Main {
 
                 @Override
                 public void onExpect(String buyOrSell, String symbol, String nowPrice, float rate) {
-                    //huobiWebSocket.pause();
+                    huobiWebSocket.pause(symbol);
                     System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                     System.out.println(buyOrSell + "\t币种:" + symbol + "\t现价:" + nowPrice +"\t跌涨:" + rate);
                     System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");

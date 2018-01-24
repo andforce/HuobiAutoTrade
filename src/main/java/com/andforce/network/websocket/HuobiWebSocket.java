@@ -22,7 +22,9 @@ import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HuobiWebSocket extends WebSocketClient {
@@ -35,7 +37,7 @@ public class HuobiWebSocket extends WebSocketClient {
 
     private Gson mGson = new Gson();
 
-    private boolean mPause = false;
+    private List<String> mNeedPause = new ArrayList<>();
 
 
 
@@ -84,9 +86,6 @@ public class HuobiWebSocket extends WebSocketClient {
 
                     //System.out.println(" market:" + market);
 
-                    if (mPause){
-                        return;
-                    }
 
                     MarketKLine kLine = mGson.fromJson(market, MarketKLine.class);
                     Tick tick = kLine.getTick();
@@ -94,9 +93,13 @@ public class HuobiWebSocket extends WebSocketClient {
                     float rate = (tick.getClose() - tick.getOpen()) * 100 / tick.getOpen();
                     float close = tick.getClose();
                     float open = tick.getOpen();
-                    String coin = kLine.getCh().split("\\.")[1].toUpperCase();
 
                     String closeStr = String.format("%08.2f", close);
+                    String coin = kLine.getCh().split("\\.")[1].toUpperCase();
+                    // 对应的币种暂停监控
+                    if (mNeedPause.contains(coin)){
+                        return;
+                    }
 
                     if (rate >= TradeConfig.SELL){
                         if (mOnExpectListener != null){
@@ -164,12 +167,18 @@ public class HuobiWebSocket extends WebSocketClient {
         }
     }
 
-    public void pause(){
-        mPause = true;
+    public void pause(String coin){
+        String up = coin.toUpperCase();
+        if (!mNeedPause.contains(up)){
+            mNeedPause.add(up);
+        }
     }
 
-    public void restart(){
-        mPause = false;
+    public void restart(String coin){
+        String up = coin.toUpperCase();
+        if (mNeedPause.contains(up)){
+            mNeedPause.remove(up);
+        }
     }
 
     public void stop(){
