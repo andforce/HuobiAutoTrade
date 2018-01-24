@@ -29,7 +29,7 @@ public class FakeUtils {
         }
     }
 
-    public MyHuobi makeFakeData(String content){
+    public MyHuobi makeFakeData(){
 
         MyHuobi myHuobi = MyHuobi.getInstance();
         myHuobi.setAccount(new Account(1682181));
@@ -44,6 +44,17 @@ public class FakeUtils {
 
     public void buy(String symbol, float buyAmount, float usdt){
 
+        if (symbol.equals("xrpusdt")){
+            if (buyAmount < 1.f){
+                write(TimeUtils.getTimeStr() + " 购买XRP失败， 数量：" + buyAmount);
+                return;
+            }
+        } else {
+            if (buyAmount < 0.001f){
+                write(TimeUtils.getTimeStr() + " 购买BTC失败， 数量：" + buyAmount);
+                return;
+            }
+        }
         // 消耗USDT
         float realPrice = formatFloat(usdt);
         float realBuyAmount = formatFloat(buyAmount);
@@ -70,20 +81,20 @@ public class FakeUtils {
         return NumberUtils.shortFloat(price, 2);
     }
 
-    public void sell(String symbol, float buyAmount, float price){
+    public void sell(String symbol, float sellCount, float price){
 
         // 获取USDT 手续费千分之二
         float realPrice = formatFloat(price);
-        float realBuyAmount = formatFloat(buyAmount);
+        float realBuyAmount = formatFloat(sellCount);
 
         float total = realPrice * realBuyAmount;
         float fee = total * 0.002f;
 
         USDT += total;
         if (symbol.equals("xrpusdt")){
-            XRP -= buyAmount;
+            XRP -= sellCount;
         } else {
-            BTC -= buyAmount;
+            BTC -= sellCount;
         }
         String sell = TimeUtils.getTimeStr() + " \tsell:" + symbol + " account:" + realBuyAmount + " price:"  + realPrice + " fee:" + fee + " 实际所得USDT:" + (total - fee) + " 账户USDT总量:" + USDT + " xrp:" + XRP + " btc:" + BTC;
         System.out.println(sell);
