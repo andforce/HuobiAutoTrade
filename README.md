@@ -1,1 +1,1 @@
-# HuobiAutoTrade
+# Auto
