@@ -1,6 +1,7 @@
 package com.andforce.network.websocket;
 
 import com.alibaba.fastjson.JSONObject;
+import com.andforce.TradeConfig;
 import com.andforce.bean.market.MarketKLine;
 import com.andforce.bean.market.Tick;
 import com.andforce.utils.CommonUtils;
@@ -33,6 +34,8 @@ public class HuobiWebSocket extends WebSocketClient {
     private static HuobiWebSocket mInstance = null;
 
     private Gson mGson = new Gson();
+
+    private boolean mPause = false;
 
 
 
@@ -81,6 +84,10 @@ public class HuobiWebSocket extends WebSocketClient {
 
                     //System.out.println(" market:" + market);
 
+                    if (mPause){
+                        return;
+                    }
+
                     MarketKLine kLine = mGson.fromJson(market, MarketKLine.class);
                     Tick tick = kLine.getTick();
 
@@ -90,11 +97,19 @@ public class HuobiWebSocket extends WebSocketClient {
                     String coin = kLine.getCh().split("\\.")[1].toUpperCase();
 
                     String closeStr = String.format("%08.2f", close);
-                    System.out.println(coin + " \tOpen:\t" + String.format("%08.2f", open) + "\t\tClose:\t" + closeStr + "\t\tRate:\t" + String.format("%.2f%%", rate));
 
-                    if (mOnExpectListener != null){
-                        mOnExpectListener.onExpect(coin, closeStr, rate);
+                    if (rate >= TradeConfig.SELL){
+                        if (mOnExpectListener != null){
+                            mOnExpectListener.onExpect("sell", coin, closeStr, rate);
+                        }
+                    } else if (rate <= TradeConfig.BUY){
+                        if (mOnExpectListener != null){
+                            mOnExpectListener.onExpect("buy",coin, closeStr, rate);
+                        }
+                    } else {
+                        System.out.println(coin + " \tOpen:\t" + String.format("%08.2f", open) + "\t\tClose:\t" + closeStr + "\t\tRate:\t" + String.format("%.2f%%", rate));
                     }
+
                 }
             }
 //			System.out.println(MAP_CUR_RESULT);
@@ -147,6 +162,18 @@ public class HuobiWebSocket extends WebSocketClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void pause(){
+        mPause = true;
+    }
+
+    public void restart(){
+        mPause = false;
+    }
+
+    public void stop(){
+        this.close();
     }
 
     public void startMonitorPrice(OnExpectListener listener, String[] monitors) {

@@ -14,6 +14,7 @@ public class Main {
 
 
 
+
     public static void main(String[] args) throws URISyntaxException {
 
 
@@ -30,9 +31,13 @@ public class Main {
             HuobiWebSocket huobiWebSocket = HuobiWebSocket.getInstance();
 
             huobiWebSocket.startMonitorPrice(new OnExpectListener() {
-                @Override
-                public void onExpect(String symbol, String nowPrice, float rate) {
 
+                @Override
+                public void onExpect(String buyOrSell, String symbol, String nowPrice, float rate) {
+                    //huobiWebSocket.pause();
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                    System.out.println(buyOrSell + "\t币种:" + symbol + "\t现价:" + nowPrice +"\t跌涨:" + rate);
+                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 }
             },new String[]{"xrpusdt", "btcusdt"});
             return;
