@@ -91,7 +91,7 @@ public class FakeUtils {
         float fee = total * 0.002f;
 
         USDT += total;
-        if (symbol.equals("xrpusdt")){
+        if (symbol.toLowerCase().equals("xrpusdt")){
             XRP -= sellCount;
         } else {
             BTC -= sellCount;

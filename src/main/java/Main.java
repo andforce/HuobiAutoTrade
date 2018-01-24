@@ -33,7 +33,7 @@ public class Main {
         double usdt = myHuobi.getTotalUSDT();
 
         System.out.println("USDT: " + usdt);
-        if (false){
+        if (true){
 
 
             FakeUtils fakeUtils = new FakeUtils();
@@ -64,6 +64,8 @@ public class Main {
 
                     }
 
+                    huobiWebSocket.restart(symbol);
+
 //                    BuyOrSellApi api = new BuyOrSellApi();
 //
 //                    api.buy(String.valueOf(myHuobi.getAccount().getAccountId()),symbol, 1f, 1.3333f);
@@ -72,7 +74,7 @@ public class Main {
 //                    System.out.println(buyOrSell + "\t币种:" + symbol + "\t现价:" + nowPrice +"\t跌涨:" + rate);
 //                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 }
-            },new String[]{/*"xrpusdt", */"btcusdt"});
+            },new String[]{"xrpusdt", "btcusdt"});
 
 
 
